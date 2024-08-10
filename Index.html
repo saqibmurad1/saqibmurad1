@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Database Website</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Data from Google Sheets</h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        async function fetchData() {
+            const sheetId = '1LZ1LUo2VTnRMDb5-J1JuKvAJWjElsjG1CCQcQq5-2iM'; // Replace with your Google Sheet ID
+            const range = 'Sheet1'; // Adjust if your sheet name is different
+            const apiKey = 'YOUR_API_KEY'; // Get API key from Google Sheets API
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+
+            const tableBody = document.querySelector('#data-table tbody');
+            rows.forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
